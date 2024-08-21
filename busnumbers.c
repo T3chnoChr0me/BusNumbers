@@ -266,23 +266,26 @@ void busNumbers_print(struct List *list){
 
   else{
     while (ptr != NULL){
-      if(ptr->id == tmp->id - 1) {
+      if(tmp != NULL && (ptr->id == tmp->id - 1)) {
         count++;
-        while (tmp->id == tmp->prev->id + 1) {
-          tmp = tmp->next;
-          count++; 
+        while (tmp->next != NULL){  
+          if (tmp->id == tmp->next->id - 1) {
+            tmp = tmp->next;
+            count++; 
+          }
         }
-
-        if(count >= 2) {printf("%d-%d", ptr->id, tmp->prev->id);}
-        else {printf ("%d %d", ptr->id, tmp->prev->id);}
+        if(count >= 2) {printf("%d-%d", ptr->id, tmp->id);}
+        else {printf ("%d %d", ptr->id, tmp->id);}
         
-        ptr = tmp;
+        ptr = tmp->next;
         tmp = ptr->next;
+        count = 0;
       }
 
       else {
         printf("%d", ptr->id);
         ptr = ptr->next;
+        if(tmp != NULL) {tmp = tmp->next;}
       }
       if (ptr != NULL) {printf(" ");}
     }
@@ -302,14 +305,16 @@ int main(int argc, char *argv[]) {              //Main function takes command li
       scanf("%d", &busNumber);
       tmp = create_node(busNumber);
       insert_tail(tmp, list);
+      busNumber = 0;
     }
-    
-    //print_list(list);
 
     insertion_sort_by_ID_increasing(list);
+    
+    print_list(list);
 
     busNumbers_print(list);
 
+    free(tmp);
     destroy_list(list);                         //Frees the memory that was dynamically located during program execution
 
     return 0;
