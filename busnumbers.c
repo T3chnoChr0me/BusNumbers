@@ -259,37 +259,36 @@ void busNumbers_print(struct List *list){
 
   ptr = list->head;
   tmp = ptr->next;
-  //Why this isn't working: only print the sequence with a dash, if there are two or more consecutive
   int count = 0;
 
-  if(list->size == 1) {printf("%d", list->head->id);}
-
-  else{
-    while (ptr != NULL){
-      if(tmp != NULL && (ptr->id == tmp->id - 1)) {
+  while (tmp != NULL) {
+    if (ptr->id+1 == tmp->id) {
+      count++;
+      while (tmp->next != NULL && (tmp->id+1 == tmp->next->id)) {
         count++;
-        while (tmp->next != NULL){  
-          if (tmp->id == tmp->next->id - 1) {
-            tmp = tmp->next;
-            count++; 
-          }
-        }
-        if(count >= 2) {printf("%d-%d", ptr->id, tmp->id);}
-        else {printf ("%d %d", ptr->id, tmp->id);}
-        
+        tmp = tmp->next;
+      }
+      
+      if (count >= 2) {printf("%d-%d", ptr->id, tmp->id);}
+      else {printf("%d %d", ptr->id, tmp->id);}
+
+      count = 0;
+
+      if (tmp->next != NULL) {
         ptr = tmp->next;
         tmp = ptr->next;
-        count = 0;
       }
-
-      else {
-        printf("%d", ptr->id);
-        ptr = ptr->next;
-        if(tmp != NULL) {tmp = tmp->next;}
-      }
-      if (ptr != NULL) {printf(" ");}
+      else {tmp = tmp->next;}
     }
+
+    else {
+      printf("%d", ptr->id);
+      ptr = ptr->next;
+      tmp = ptr->next;
+    }
+    if ((ptr != NULL)) {printf(" ");}
   }
+  if(ptr->next == NULL) {printf("%d", ptr->id);}
 }
 
 int main(int argc, char *argv[]) {              //Main function takes command line arguments
@@ -310,11 +309,10 @@ int main(int argc, char *argv[]) {              //Main function takes command li
 
     insertion_sort_by_ID_increasing(list);
     
-    print_list(list);
+    //print_list(list);
 
     busNumbers_print(list);
 
-    free(tmp);
     destroy_list(list);                         //Frees the memory that was dynamically located during program execution
 
     return 0;
