@@ -143,7 +143,7 @@ void remove_by_id(int id, struct List *list) {
     struct Node *ptr = find_by_id(id,list);   //create a pointer to the id node
     
     if (list->head == NULL && list->tail == NULL) {
-      printf("List is empty"); 
+      //printf("List is empty"); 
       return;} //If the list is empty
     else if(list->head == ptr && list->tail == ptr) {
       list->head = NULL, list->tail = NULL; 
@@ -165,8 +165,8 @@ void remove_by_id(int id, struct List *list) {
       list->size--;
       free(ptr);} //Removing a middle node
 
-    printf("Removing node with id %d, the list now has %d elements.", id, list->size);
-    printf("\n");
+    //printf("Removing node with id %d, the list now has %d elements.", id, list->size);
+    //printf("\n");
 }
 
 void insert_after_id(int id, struct Node *node, struct List *list) {
@@ -187,7 +187,7 @@ void insert_after_id(int id, struct Node *node, struct List *list) {
       insert_tail(node, list);
     }
 
-    printf("Inserted (%d) after node with id %d. The list now has %d elements.\n", node->id, ptr->id, list->size);
+    //printf("Inserted (%d) after node with id %d. The list now has %d elements.\n", node->id, ptr->id, list->size);
 }
 
 void insert_before_id(int id, struct Node *node, struct List *list){
@@ -203,7 +203,7 @@ void insert_before_id(int id, struct Node *node, struct List *list){
     ptr->prev = node;
     list->size++;
   }//If the node is not the first node in the list
-    printf("Inserted (%d) before node with id %d. The list now has %d elements.\n", node->id, ptr->id, list->size);
+    //printf("Inserted (%d) before node with id %d. The list now has %d elements.\n", node->id, ptr->id, list->size);
 }
 
 void insertion_sort_by_ID_increasing(struct List *list) {
@@ -213,7 +213,7 @@ void insertion_sort_by_ID_increasing(struct List *list) {
       int swap;
 
       if (list->head == list->tail) {                    //If list is of size 1, it is already sorted
-        printf("The list is already sorted");
+        //printf("The list is already sorted");
         return;
         }
 
@@ -233,7 +233,7 @@ void insertion_sort_by_ID_increasing(struct List *list) {
           }
           else{                                 //If there is no switch needed
             if(tmp == NULL) {swap = 0;}
-            printf("(%d) does not need to switch position with (%d)\n", key->id, ptr->id);
+            //printf("(%d) does not need to switch position with (%d)\n", key->id, ptr->id);
             ptr = NULL;          
           }
         }
@@ -248,11 +248,46 @@ void insertion_sort_by_ID_increasing(struct List *list) {
             insert_before_id(tmp->id,key,list);         //Inserting the node back into the list in the proper position
           }//Else putting it behind any other node
 
-          print_list(list);
+          //print_list(list);
         }
       }
 }
 
+void busNumbers_print(struct List *list){
+  struct Node *ptr = NULL;
+  struct Node *tmp = NULL;
+
+  ptr = list->head;
+  tmp = ptr->next;
+  //Why this isn't working: only print the sequence with a dash, if there are two or more consecutive
+  int count = 0;
+
+  if(list->size == 1) {printf("%d", list->head->id);}
+
+  else{
+    while (ptr != NULL){
+      if(ptr->id == tmp->id - 1) {
+        count++;
+        while (tmp->id == tmp->prev->id + 1) {
+          tmp = tmp->next;
+          count++; 
+        }
+
+        if(count >= 2) {printf("%d-%d", ptr->id, tmp->prev->id);}
+        else {printf ("%d %d", ptr->id, tmp->prev->id);}
+        
+        ptr = tmp;
+        tmp = ptr->next;
+      }
+
+      else {
+        printf("%d", ptr->id);
+        ptr = ptr->next;
+      }
+      if (ptr != NULL) {printf(" ");}
+    }
+  }
+}
 
 int main(int argc, char *argv[]) {              //Main function takes command line arguments
     struct List *list = create_list();        //create a list pointer and create a list
@@ -268,8 +303,12 @@ int main(int argc, char *argv[]) {              //Main function takes command li
       tmp = create_node(busNumber);
       insert_tail(tmp, list);
     }
+    
+    //print_list(list);
 
-    print_list(list);
+    insertion_sort_by_ID_increasing(list);
+
+    busNumbers_print(list);
 
     destroy_list(list);                         //Frees the memory that was dynamically located during program execution
 
